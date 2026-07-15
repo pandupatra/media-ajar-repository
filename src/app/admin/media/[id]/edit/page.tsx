@@ -31,6 +31,7 @@ export default function EditMediaPage({ params }: { params: Promise<{ id: string
   });
   const [saving, setSaving] = useState(false);
   const [uploadingThumbnail, setUploadingThumbnail] = useState(false);
+  const [thumbnailError, setThumbnailError] = useState("");
 
   useEffect(() => {
     async function load() {
@@ -64,12 +65,20 @@ export default function EditMediaPage({ params }: { params: Promise<{ id: string
     e.preventDefault();
     if (!media) return;
     setSaving(true);
-    const updates: Parameters<typeof updateMediaAction>[1] = { ...formData };
+    const updates: Parameters<typeof updateMediaAction>[1] = {
+      ...formData,
+      file_url: formData.type === "file" ? media.file_url || "#" : null,
+      external_url: formData.type === "url" ? formData.external_url : null,
+    };
     if (!formData.thumbnail_url) {
       updates.thumbnail_url = null;
     }
-    await updateMediaAction(media.id, updates);
+    const result = await updateMediaAction(media.id, updates);
     setSaving(false);
+    if (result.errors) {
+      alert(Object.values(result.errors).join("\n"));
+      return;
+    }
     router.push("/admin/media");
   };
 
@@ -166,7 +175,10 @@ export default function EditMediaPage({ params }: { params: Promise<{ id: string
                 id="edit-format"
                 className="flex h-11 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 value={formData.format}
-                onChange={(e) => setFormData({ ...formData, format: e.target.value as Media["format"] })}
+                onChange={(e) => {
+                  const format = e.target.value as Media["format"];
+                  setFormData({ ...formData, format, type: format === "website" ? "url" : formData.type });
+                }}
               >
                 <option value="pdf">PDF</option>
                 <option value="ebook">E-Book</option>
@@ -179,21 +191,44 @@ export default function EditMediaPage({ params }: { params: Promise<{ id: string
           </CardContent>
         </Card>
 
-        {formData.type === "url" && (
-          <Card className="border-0 shadow-md shadow-primary/5 rounded-2xl">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg font-semibold">URL Eksternal</CardTitle>
-            </CardHeader>
-            <CardContent>
+        <Card className="border-0 shadow-md shadow-primary/5 rounded-2xl">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg font-semibold">Sumber Media</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="edit-source" className="text-sm font-medium">Sumber</label>
+              <select
+                id="edit-source"
+                className="flex h-11 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                value={formData.type}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  type: e.target.value as Media["type"],
+                  external_url: e.target.value === "url" ? formData.external_url : "",
+                })}
+              >
+                {formData.format !== "website" && <option value="file">Upload Manual</option>}
+                <option value="url">{formData.format === "video" ? "YouTube" : "URL Eksternal"}</option>
+              </select>
+            </div>
+            {formData.type === "url" && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {formData.format === "video" ? "URL YouTube" : "URL Eksternal"}
+                </label>
               <Input
-                placeholder="https://..."
+                type="url"
+                placeholder={formData.format === "video" ? "https://www.youtube.com/watch?v=..." : "https://..."}
                 value={formData.external_url}
                 onChange={(e) => setFormData({ ...formData, external_url: e.target.value })}
+                required
                 className="rounded-xl h-11"
               />
-            </CardContent>
-          </Card>
-        )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         <Card className="border-0 shadow-md shadow-primary/5 rounded-2xl">
           <CardHeader className="pb-3">
@@ -219,6 +254,12 @@ export default function EditMediaPage({ params }: { params: Promise<{ id: string
                   onChange={async (e) => {
                     const file = e.target.files?.[0];
                     if (!file || !media) return;
+                    setThumbnailError("");
+                    if (file.size > 1024 * 1024) {
+                      setThumbnailError("Ukuran thumbnail maksimal 1 MB");
+                      e.target.value = "";
+                      return;
+                    }
                     setUploadingThumbnail(true);
                     const data = new FormData();
                     data.append("thumbnail", file);
@@ -228,7 +269,7 @@ export default function EditMediaPage({ params }: { params: Promise<{ id: string
                       const url = result.url;
                       setFormData((prev) => ({ ...prev, thumbnail_url: url }));
                     } else if (result.error) {
-                      alert("Gagal mengunggah thumbnail: " + result.error);
+                      setThumbnailError(result.error);
                     }
                     e.target.value = "";
                   }}
@@ -241,7 +282,10 @@ export default function EditMediaPage({ params }: { params: Promise<{ id: string
                 <p className="text-sm text-muted-foreground">
                   {uploadingThumbnail ? "Mengunggah..." : "Klik atau seret gambar ke sini untuk mengunggah thumbnail"}
                 </p>
-                <p className="text-xs text-muted-foreground mt-1">JPG, PNG (maks. 5MB)</p>
+                <p className="text-xs text-muted-foreground mt-1">JPG, PNG (maks. 1 MB)</p>
+                {thumbnailError && (
+                  <p className="text-sm text-destructive mt-2" role="alert">{thumbnailError}</p>
+                )}
               </label>
             ) : (
               <Button

@@ -1,9 +1,12 @@
-import { MediaFormat, MediaType, MediaStatus } from "@/types";
+import type { MediaFormat, MediaType, MediaStatus } from "@/types";
+import { getYouTubeEmbedUrl } from "./format.ts";
 
 const VALID_FORMATS: MediaFormat[] = ["pdf", "ebook", "website", "video", "audio", "other"];
 const VALID_TYPES: MediaType[] = ["file", "url"];
 const VALID_STATUSES: MediaStatus[] = ["draft", "published"];
 const VALID_CATEGORY_TYPES = ["subject", "level", "format"] as const;
+export const VALID_SUGGESTION_FORMATS = ["pdf", "ebook", "website", "video", "audio", "other"] as const;
+export const VALID_SUGGESTION_STATUSES = ["new", "considering", "completed"] as const;
 
 export interface ValidationError {
   field: string;
@@ -76,6 +79,15 @@ export function validateMedia(
     }
   }
 
+  if (
+    input.format === "video" &&
+    input.type === "url" &&
+    typeof input.external_url === "string" &&
+    !getYouTubeEmbedUrl(input.external_url)
+  ) {
+    errors.push(createError("external_url", "Masukkan URL video YouTube yang valid"));
+  }
+
   if (!input.status || !VALID_STATUSES.includes(input.status as MediaStatus)) {
     errors.push(createError("status", "Status tidak valid"));
   }
@@ -114,4 +126,38 @@ export function sanitizeSearchQuery(query: string): string {
   }
   sanitized = sanitized.replace(/[%()]/g, "\\$&");
   return sanitized;
+}
+
+export function validateMediaSuggestion(
+  input: Record<string, unknown>
+): ValidationResult {
+  const errors: ValidationError[] = [];
+  const requiredTextFields = [
+    ["topic", "Topik atau judul", 150],
+    ["subject", "Mata pelajaran", 100],
+    ["level", "Jenjang atau kelas", 100],
+  ] as const;
+
+  for (const [field, label, maxLength] of requiredTextFields) {
+    const value = input[field];
+    if (typeof value !== "string" || value.trim().length === 0) {
+      errors.push(createError(field, `${label} wajib diisi`));
+    } else if (value.length > maxLength) {
+      errors.push(createError(field, `${label} maksimal ${maxLength} karakter`));
+    }
+  }
+
+  if (!VALID_SUGGESTION_FORMATS.includes(input.preferred_format as typeof VALID_SUGGESTION_FORMATS[number])) {
+    errors.push(createError("preferred_format", "Format media tidak valid"));
+  }
+
+  if (input.notes !== undefined && input.notes !== null) {
+    if (typeof input.notes !== "string") {
+      errors.push(createError("notes", "Catatan harus berupa teks"));
+    } else if (input.notes.length > 1000) {
+      errors.push(createError("notes", "Catatan maksimal 1000 karakter"));
+    }
+  }
+
+  return { valid: errors.length === 0, errors };
 }

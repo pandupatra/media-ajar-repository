@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { getMediaBySlug, getRelatedMedia } from "@/lib/data-server";
-import { getFormatLabel, getFormatColor, formatFileSize, formatDate } from "@/lib/format";
+import { getFormatLabel, getFormatColor, formatFileSize, formatDate, getHeyzineEmbedUrl, getYouTubeEmbedUrl } from "@/lib/format";
 import { ViewCounter } from "./view-counter";
 
 interface Props {
@@ -30,6 +30,11 @@ export default async function MediaDetailPage({ params }: Props) {
   }
 
   const relatedMedia = await getRelatedMedia(media, 4);
+  const heyzineEmbedUrl = media.type === "url" ? getHeyzineEmbedUrl(media.external_url) : null;
+  const youtubeEmbedUrl = media.format === "video" && media.type === "url"
+    ? getYouTubeEmbedUrl(media.external_url)
+    : null;
+  const mediaEmbedUrl = heyzineEmbedUrl ?? youtubeEmbedUrl;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -47,7 +52,15 @@ export default async function MediaDetailPage({ params }: Props) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
               <div className="aspect-video bg-muted rounded-2xl flex items-center justify-center overflow-hidden">
-                {media.thumbnail_url ? (
+                {mediaEmbedUrl ? (
+                  <iframe
+                    src={mediaEmbedUrl}
+                    title={media.title}
+                    className="h-full w-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                ) : media.thumbnail_url ? (
                   <img src={media.thumbnail_url} alt={media.title} className="w-full h-full object-cover" />
                 ) : (
                   <BookOpen className="h-24 w-24 text-muted-foreground/30" />
@@ -94,7 +107,7 @@ export default async function MediaDetailPage({ params }: Props) {
                   <Button size="lg" asChild className="rounded-xl">
                     <a href={media.external_url} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="mr-2 h-4 w-4" />
-                      Kunjungi Media
+                      {getYouTubeEmbedUrl(media.external_url) ? "Tonton di YouTube" : "Kunjungi Media"}
                     </a>
                   </Button>
                 )}
@@ -109,12 +122,6 @@ export default async function MediaDetailPage({ params }: Props) {
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Format</span>
                       <span className="font-medium">{getFormatLabel(media.format)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Status</span>
-                      <Badge variant={media.status === "published" ? "default" : "secondary"}>
-                        {media.status === "published" ? "Dipublikasikan" : "Draft"}
-                      </Badge>
                     </div>
                     {media.file_size && (
                       <div className="flex justify-between">

@@ -6,7 +6,7 @@ export default function AdminSettingsPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Pengaturan</h1>
-        <p className="text-muted-foreground mt-1">Pengaturan aplikasi Media Pembelajaran PTP</p>
+        <p className="text-muted-foreground mt-1">Pengaturan aplikasi SIMPEL Madrasah Kubar</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -21,7 +21,7 @@ export default function AdminSettingsPage() {
             <div>
               <label className="text-sm font-medium text-muted-foreground">Nama Aplikasi</label>
               <p className="text-sm font-medium mt-1">
-                Media Pembelajaran PTP
+                SIMPEL Madrasah Kubar
               </p>
             </div>
             <div>
@@ -31,7 +31,7 @@ export default function AdminSettingsPage() {
             <div>
               <label className="text-sm font-medium text-muted-foreground">Deskripsi</label>
               <p className="text-sm font-medium mt-1 leading-relaxed">
-                Platform penyedia media pembelajaran berkualitas untuk guru dan murid Indonesia.
+                Sistem Media Pembelajaran untuk guru dan murid.
               </p>
             </div>
           </CardContent>

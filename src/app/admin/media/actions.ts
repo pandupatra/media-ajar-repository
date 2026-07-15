@@ -9,7 +9,7 @@ import { Media } from "@/types";
 export async function createMediaAction(
   media: Partial<Media> & { subject?: string; level?: string }
 ): Promise<{ data?: Media | null; errors?: Record<string, string> }> {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const validation = validateMedia(media);
   if (!validation.valid) {
@@ -29,6 +29,7 @@ export async function createMediaAction(
     .insert([
       {
         ...mediaData,
+        created_by: admin.id,
         view_count: 0,
         download_count: 0,
       },
@@ -134,9 +135,9 @@ export async function uploadThumbnailAction(
     return { error: "File harus berupa gambar" };
   }
 
-  const maxSize = 5 * 1024 * 1024; // 5MB
+  const maxSize = 1024 * 1024;
   if (file.size > maxSize) {
-    return { error: "Ukuran file maksimal 5MB" };
+    return { error: "Ukuran thumbnail maksimal 1 MB" };
   }
 
   const supabase = createAdminClient();

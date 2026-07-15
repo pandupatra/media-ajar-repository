@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { Lexend } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const lexend = Lexend({
-  variable: "--font-lexend",
+const plusJakartaSans = Plus_Jakarta_Sans({
+  variable: "--font-plus-jakarta-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 const geistMono = Geist_Mono({
@@ -15,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Media Pembelajaran PTP - Platform Belajar Online",
-  description: "Temukan berbagai media pembelajaran berkualitas untuk guru dan murid. E-book, video, PDF, dan materi interaktif dalam satu platform.",
+  title: "SIMPEL Madrasah Kubar - Sistem Media Pembelajaran",
+  description: "SIMPEL Madrasah Kubar adalah Sistem Media Pembelajaran untuk guru dan murid. Temukan e-book, video, PDF, dan materi interaktif dalam satu platform.",
 };
 
 export default function RootLayout({
@@ -27,7 +26,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${lexend.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${plusJakartaSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:rounded-xl focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-contrast focus:text-sm focus:outline-none">

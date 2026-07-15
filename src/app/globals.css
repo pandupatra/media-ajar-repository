@@ -22,7 +22,7 @@
   --color-input: #e2e8f0;
   --color-ring: #135bec;
   --radius: 0.75rem;
-  --font-sans: var(--font-lexend);
+  --font-sans: var(--font-plus-jakarta-sans);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -69,4 +69,29 @@ body {
 
 .animate-float-delayed {
   animation: float 6s ease-in-out 2s infinite;
+}
+
+@keyframes home-carousel-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.home-carousel-track {
+  animation: home-carousel-scroll 80s linear infinite;
+  will-change: transform;
+}
+
+.home-carousel:hover .home-carousel-track,
+.home-carousel:focus .home-carousel-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up,
+  .animate-float,
+  .animate-float-delayed,
+  .home-carousel-track {
+    animation: none;
+  }
 }

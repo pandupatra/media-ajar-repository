@@ -11,7 +11,7 @@ export default function TentangPage() {
         <div className="bg-gradient-to-b from-primary/5 to-background py-12 md:py-16">
           <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center">
             <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
-              Tentang Media Pembelajaran PTP
+              Tentang SIMPEL Madrasah Kubar
             </h1>
           </div>
         </div>
@@ -21,13 +21,55 @@ export default function TentangPage() {
             <section>
               <div className="flex items-center gap-3 mb-6">
                 <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                  <BookOpen className="h-6 w-6 text-primary" />
+                </div>
+                <h2 className="text-2xl font-bold">Tentang Platform</h2>
+              </div>
+              <div className="space-y-5 text-lg leading-relaxed text-muted-foreground">
+                <p>
+                  SIMPEL Madrasah Kubar adalah sebuah platform digital yang dikembangkan sebagai pusat layanan media pembelajaran untuk membantu guru menciptakan proses belajar yang lebih kreatif, inovatif, dan bermakna. Website ini hadir sebagai wadah yang menyediakan beragam media pembelajaran yang dapat dimanfaatkan oleh pendidik sesuai dengan kebutuhan, karakteristik peserta didik, serta perkembangan kurikulum.
+                </p>
+                <p>
+                  Melalui SIMPEL Madrasah Kubar, guru dapat menemukan berbagai sumber belajar dalam satu tempat, mulai dari media presentasi interaktif, video pembelajaran, modul ajar, LKPD, permainan edukatif, asesmen, infografis, hingga berbagai media digital lainnya yang siap digunakan maupun dikembangkan kembali sesuai kebutuhan pembelajaran.
+                </p>
+                <p>
+                  Kami percaya bahwa setiap guru memiliki potensi untuk menghadirkan pengalaman belajar yang menyenangkan dan inspiratif. Oleh karena itu, Simple Madrasah Kubar dibangun dengan prinsip mudah diakses, mudah digunakan, dan mudah dikembangkan, sehingga dapat menjadi sahabat guru dalam meningkatkan kualitas pembelajaran.
+                </p>
+                <p>
+                  SIMPEL Madrasah Kubar bukan sekadar tempat menyimpan media pembelajaran, tetapi merupakan ruang kolaborasi dan inspirasi bagi para pendidik untuk terus berinovasi. Dengan semangat berbagi dan belajar bersama, kami berharap platform ini dapat memberikan manfaat nyata dalam mendukung terciptanya pembelajaran yang efektif, menarik, dan berdampak bagi peserta didik.
+                </p>
+              </div>
+            </section>
+
+            <section>
+              <div className="flex items-center gap-3 mb-8">
+                <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center">
                   <Users className="h-6 w-6 text-primary" />
                 </div>
-                <h2 className="text-2xl font-bold">Profil Tim Pengembang</h2>
+                <h2 className="text-2xl font-bold">Tim Pengembang</h2>
               </div>
-              <p className="text-muted-foreground leading-relaxed text-lg">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-              </p>
+              <Card className="overflow-hidden border-0 shadow-lg shadow-primary/5">
+                <CardContent className="p-0">
+                  <div className="bg-primary px-6 py-8 text-primary-foreground md:px-8">
+                    <p className="max-w-2xl text-lg leading-relaxed">
+                      SIMPEL Madrasah Kubar dikembangkan oleh empat anggota tim yang berkolaborasi untuk menghadirkan layanan media pembelajaran yang mudah digunakan oleh guru.
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-1 gap-px bg-border sm:grid-cols-2">
+                    {["01", "02", "03", "04"].map((number) => (
+                      <div key={number} className="flex items-center gap-4 bg-card p-6 md:p-8">
+                        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 font-bold text-primary">
+                          {number}
+                        </span>
+                        <div>
+                          <h3 className="font-semibold">Anggota Tim {Number(number)}</h3>
+                          <p className="text-sm text-muted-foreground">Tim Pengembang SIMPEL</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             </section>
 
             <section>
@@ -70,7 +112,7 @@ export default function TentangPage() {
                   <CardContent className="p-6">
                     <h3 className="font-semibold mb-2">Email</h3>
                     <p className="text-muted-foreground">
-                      info@ptp-pembelajaran.id
+                      pendiskubar@gmail.com
                     </p>
                   </CardContent>
                 </Card>

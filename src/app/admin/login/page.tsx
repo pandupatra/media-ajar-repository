@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { BookOpen, Loader2 } from "lucide-react";
+import Image from "next/image";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/lib/supabase/client";
@@ -45,12 +46,10 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2.5 mb-6">
-            <div className="h-11 w-11 rounded-xl bg-primary flex items-center justify-center">
-              <BookOpen className="h-6 w-6 text-white" />
-            </div>
-            <span className="text-2xl font-bold">Media PTP</span>
+            <Image src="/logo.png" alt="" width={44} height={44} className="rounded-xl" />
+            <span className="text-2xl font-bold">SIMPEL Madrasah Kubar</span>
           </Link>
-          <h1 className="text-2xl font-bold">Login Admin</h1>
+          <h1 className="text-2xl font-bold">Login</h1>
           <p className="text-muted-foreground mt-2">
             Masuk ke dashboard admin untuk mengelola media pembelajaran
           </p>

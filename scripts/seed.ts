@@ -2,8 +2,24 @@ import { createClient } from "@supabase/supabase-js";
 import { readFileSync } from "fs";
 import { resolve } from "path";
 
-// Load env vars from .env.local manually
-const envPath = resolve(process.cwd(), ".env.local");
+// ponytail: keep one shared env source; fall back to .env.local for local overrides.
+const envCandidates = [".env.local", ".env"];
+const envPath = envCandidates
+  .map((file) => resolve(process.cwd(), file))
+  .find((file) => {
+    try {
+      readFileSync(file, "utf-8");
+      return true;
+    } catch {
+      return false;
+    }
+  });
+
+if (!envPath) {
+  console.error("Missing .env or .env.local");
+  process.exit(1);
+}
+
 const envContent = readFileSync(envPath, "utf-8");
 for (const line of envContent.split("\n")) {
   const trimmed = line.trim();
@@ -22,7 +38,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 if (!supabaseUrl || !serviceRoleKey) {
-  console.error("Missing Supabase credentials in .env.local");
+  console.error("Missing Supabase credentials in .env or .env.local");
   process.exit(1);
 }
 

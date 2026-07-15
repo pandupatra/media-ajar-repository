@@ -43,14 +43,19 @@ export default function AddMediaPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    await createMediaAction({
+    const result = await createMediaAction({
       ...formData,
       slug: generateSlug(formData.title),
       file_url: formData.type === "file" ? "#" : null,
+      external_url: formData.type === "url" ? formData.external_url : null,
       thumbnail_url: null,
       file_size: null,
     });
     setSaving(false);
+    if (result.errors) {
+      alert(Object.values(result.errors).join("\n"));
+      return;
+    }
     router.push("/admin/media");
   };
 
@@ -155,7 +160,11 @@ export default function AddMediaPage() {
                 <select
                   id="media-format"
                   className="flex h-11 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                  onChange={(e) => setFormData({ ...formData, format: e.target.value as typeof formData.format })}
+                  value={formData.format}
+                  onChange={(e) => {
+                    const format = e.target.value as typeof formData.format;
+                    setFormData({ ...formData, format, type: format === "website" ? "url" : formData.type });
+                  }}
                 >
                   <option value="pdf">PDF</option>
                   <option value="ebook">E-Book</option>
@@ -186,29 +195,21 @@ export default function AddMediaPage() {
             <CardTitle className="text-lg font-semibold">Sumber Media</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2 cursor-pointer px-4 py-2 rounded-xl border border-input hover:bg-muted/30 transition-colors">
-                <input
-                  type="radio"
-                  name="type"
-                  value="file"
-                  checked={formData.type === "file"}
-                  onChange={() => setFormData({ ...formData, type: "file" })}
-                  className="accent-primary"
-                />
-                <span className="text-sm font-medium">Upload File</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer px-4 py-2 rounded-xl border border-input hover:bg-muted/30 transition-colors">
-                <input
-                  type="radio"
-                  name="type"
-                  value="url"
-                  checked={formData.type === "url"}
-                  onChange={() => setFormData({ ...formData, type: "url" })}
-                  className="accent-primary"
-                />
-                <span className="text-sm font-medium">URL Eksternal</span>
-              </label>
+            <div className="space-y-2">
+              <label htmlFor="media-source" className="text-sm font-medium">Sumber</label>
+              <select
+                id="media-source"
+                className="flex h-11 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                value={formData.type}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  type: e.target.value as typeof formData.type,
+                  external_url: e.target.value === "url" ? formData.external_url : "",
+                })}
+              >
+                {formData.format !== "website" && <option value="file">Upload Manual</option>}
+                <option value="url">{formData.format === "video" ? "YouTube" : "URL Eksternal"}</option>
+              </select>
             </div>
 
             {formData.type === "file" ? (
@@ -222,9 +223,12 @@ export default function AddMediaPage() {
               </div>
             ) : (
               <div className="space-y-2">
-                <label className="text-sm font-medium">URL Eksternal</label>
+                <label className="text-sm font-medium">
+                  {formData.format === "video" ? "URL YouTube" : "URL Eksternal"}
+                </label>
                 <Input
-                  placeholder="https://..."
+                  type="url"
+                  placeholder={formData.format === "video" ? "https://www.youtube.com/watch?v=..." : "https://..."}
                   value={formData.external_url}
                   onChange={(e) => setFormData({ ...formData, external_url: e.target.value })}
                   required={formData.type === "url"}
@@ -243,7 +247,7 @@ export default function AddMediaPage() {
             <div className="border-2 border-dashed border-input rounded-2xl p-8 text-center hover:bg-muted/30 transition-colors cursor-pointer">
               <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
               <p className="text-sm text-muted-foreground">Klik atau seret gambar ke sini untuk mengunggah thumbnail</p>
-              <p className="text-xs text-muted-foreground mt-1">JPG, PNG (maks. 5MB)</p>
+              <p className="text-xs text-muted-foreground mt-1">JPG, PNG (maks. 1 MB)</p>
             </div>
           </CardContent>
         </Card>

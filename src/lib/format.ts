@@ -43,3 +43,42 @@ export function generateSlug(title: string) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 }
+
+export function getYouTubeEmbedUrl(value: string | null) {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    const host = url.hostname.replace(/^www\./, "");
+    const id = host === "youtu.be"
+      ? url.pathname.split("/")[1]
+      : host === "youtube.com" || host === "m.youtube.com"
+        ? url.pathname === "/watch"
+          ? url.searchParams.get("v")
+          : url.pathname.match(/^\/(?:embed|shorts)\/([^/]+)/)?.[1]
+        : null;
+    return id ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}` : null;
+  } catch {
+    return null;
+  }
+}
+
+export function getHeyzineEmbedUrl(value: string | null) {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    const host = url.hostname.toLowerCase().replace(/^www\./, "");
+    if (
+      !["http:", "https:"].includes(url.protocol) ||
+      host !== "heyzine.com" ||
+      url.port ||
+      !/^\/flip-book\/[a-z0-9]+\.html\/?$/i.test(url.pathname)
+    ) {
+      return null;
+    }
+    url.protocol = "https:";
+    url.hostname = "heyzine.com";
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
