@@ -68,6 +68,7 @@ export function MediaSuggestionForm() {
           <option value="ebook">E-book</option>
           <option value="video">Video</option>
           <option value="audio">Audio</option>
+          <option value="presentasi">Presentasi</option>
           <option value="website">Website</option>
           <option value="other">Lainnya</option>
         </select>

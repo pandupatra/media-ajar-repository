@@ -83,6 +83,7 @@ const categories = [
   { id: "c3333333-3333-3333-3333-333333333333", name: "Website", slug: "website", type: "format", icon: "globe", sort_order: 3, is_active: true, created_at: "2025-01-01T00:00:00Z" },
   { id: "c4444444-4444-4444-4444-444444444444", name: "E-Book", slug: "ebook", type: "format", icon: "book-open", sort_order: 4, is_active: true, created_at: "2025-01-01T00:00:00Z" },
   { id: "c5555555-5555-5555-5555-555555555555", name: "Audio", slug: "audio", type: "format", icon: "headphones", sort_order: 5, is_active: true, created_at: "2025-01-01T00:00:00Z" },
+  { id: "c6666666-6666-6666-6666-666666666666", name: "Presentasi", slug: "presentasi", type: "format", icon: "presentation", sort_order: 6, is_active: true, created_at: "2025-01-01T00:00:00Z" },
 ];
 
 const media = [

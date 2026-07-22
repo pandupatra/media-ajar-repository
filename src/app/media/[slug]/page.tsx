@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { getMediaBySlug, getRelatedMedia } from "@/lib/data-server";
-import { getFormatLabel, getFormatColor, formatFileSize, formatDate, getHeyzineEmbedUrl, getYouTubeEmbedUrl } from "@/lib/format";
+import { getFormatLabel, getFormatColor, formatFileSize, formatDate, getCanvaEmbedUrl, getHeyzineEmbedUrl, getYouTubeEmbedUrl } from "@/lib/format";
 import { ViewCounter } from "./view-counter";
 
 interface Props {
@@ -30,11 +30,14 @@ export default async function MediaDetailPage({ params }: Props) {
   }
 
   const relatedMedia = await getRelatedMedia(media, 4);
+  const canvaEmbedUrl = media.format === "presentasi" && media.type === "url"
+    ? getCanvaEmbedUrl(media.external_url)
+    : null;
   const heyzineEmbedUrl = media.type === "url" ? getHeyzineEmbedUrl(media.external_url) : null;
   const youtubeEmbedUrl = media.format === "video" && media.type === "url"
     ? getYouTubeEmbedUrl(media.external_url)
     : null;
-  const mediaEmbedUrl = heyzineEmbedUrl ?? youtubeEmbedUrl;
+  const mediaEmbedUrl = canvaEmbedUrl ?? heyzineEmbedUrl ?? youtubeEmbedUrl;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -107,7 +110,7 @@ export default async function MediaDetailPage({ params }: Props) {
                   <Button size="lg" asChild className="rounded-xl">
                     <a href={media.external_url} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="mr-2 h-4 w-4" />
-                      {getYouTubeEmbedUrl(media.external_url) ? "Tonton di YouTube" : "Kunjungi Media"}
+                      {canvaEmbedUrl ? "Buka di Canva" : youtubeEmbedUrl ? "Tonton di YouTube" : "Kunjungi Media"}
                     </a>
                   </Button>
                 )}

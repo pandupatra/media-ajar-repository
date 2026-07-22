@@ -173,7 +173,7 @@ export default async function HomePage() {
           <div className="container relative z-10 mx-auto -mt-10 px-4 md:-mt-20 md:px-6">
             <div className="mx-auto flex max-w-5xl flex-col items-center rounded-[1.75rem] border border-slate-200 bg-white px-6 py-8 text-center shadow-[0_24px_70px_-35px_rgba(15,23,42,0.35)] md:px-12 md:py-10">
               <p className="max-w-4xl text-pretty text-base font-semibold leading-7 text-[#172554] md:text-xl md:leading-8">
-                SIMPEL Madrasah Kubar hadir sebagai platform yang berkomitmen mewujudkan pembelajaran yang kreatif, inovatif, dan bermakna melalui penyediaan media pembelajaran digital yang mudah diakses, digunakan, dan dikembangkan bersama.
+                <span className="text-[#0d9488] font-bold">SIMPEL</span> <span className="text-primary font-bold">Madrasah Kubar</span> hadir sebagai platform yang berkomitmen mewujudkan pembelajaran yang kreatif, inovatif, dan bermakna melalui penyediaan media pembelajaran digital yang mudah diakses, digunakan, dan dikembangkan bersama.
               </p>
               <Button asChild size="lg" className="mt-6 h-11 rounded-xl px-6 shadow-lg shadow-primary/20">
                 <Link href="/tentang">

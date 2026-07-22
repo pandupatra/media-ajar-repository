@@ -78,6 +78,10 @@ export function Navbar() {
           ))}
         </nav>
 
+        <Button asChild size="sm" className="hidden md:inline-flex ml-2 rounded-xl">
+          <Link href="/login">Masuk</Link>
+        </Button>
+
         <Button
           variant="ghost"
           size="icon"
@@ -112,6 +116,9 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
+          <Button asChild className="mt-3 w-full rounded-xl">
+            <Link href="/login" onClick={() => setMobileMenuOpen(false)}>Masuk</Link>
+          </Button>
         </div>
       )}
     </header>

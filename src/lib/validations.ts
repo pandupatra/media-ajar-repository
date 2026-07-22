@@ -1,11 +1,11 @@
 import type { MediaFormat, MediaType, MediaStatus } from "@/types";
-import { getYouTubeEmbedUrl } from "./format.ts";
+import { getCanvaEmbedUrl, getYouTubeEmbedUrl } from "./format.ts";
 
-const VALID_FORMATS: MediaFormat[] = ["pdf", "ebook", "website", "video", "audio", "other"];
+const VALID_FORMATS: MediaFormat[] = ["pdf", "ebook", "website", "video", "audio", "presentasi", "other"];
 const VALID_TYPES: MediaType[] = ["file", "url"];
-const VALID_STATUSES: MediaStatus[] = ["draft", "published"];
+const VALID_STATUSES: MediaStatus[] = ["draft", "pending", "published"];
 const VALID_CATEGORY_TYPES = ["subject", "level", "format"] as const;
-export const VALID_SUGGESTION_FORMATS = ["pdf", "ebook", "website", "video", "audio", "other"] as const;
+export const VALID_SUGGESTION_FORMATS = ["pdf", "ebook", "website", "video", "audio", "presentasi", "other"] as const;
 export const VALID_SUGGESTION_STATUSES = ["new", "considering", "completed"] as const;
 
 export interface ValidationError {
@@ -88,6 +88,15 @@ export function validateMedia(
     errors.push(createError("external_url", "Masukkan URL video YouTube yang valid"));
   }
 
+  if (
+    input.format === "presentasi" &&
+    input.type === "url" &&
+    typeof input.external_url === "string" &&
+    !getCanvaEmbedUrl(input.external_url)
+  ) {
+    errors.push(createError("external_url", "Masukkan link berbagi desain Canva yang valid"));
+  }
+
   if (!input.status || !VALID_STATUSES.includes(input.status as MediaStatus)) {
     errors.push(createError("status", "Status tidak valid"));
   }
@@ -126,6 +135,30 @@ export function sanitizeSearchQuery(query: string): string {
   }
   sanitized = sanitized.replace(/[%()]/g, "\\$&");
   return sanitized;
+}
+
+export function validateTeacherSignup(input: Record<string, string>): ValidationResult {
+  const errors: ValidationError[] = [];
+  for (const [field, label] of [
+    ["name", "Nama lengkap"],
+    ["madrasah", "Madrasah"],
+    ["teaching_subject", "Mata pelajaran"],
+    ["phone", "Nomor telepon"],
+    ["email", "Email"],
+    ["password", "Password"],
+  ] as const) {
+    if (!input[field]?.trim()) errors.push(createError(field, `${label} wajib diisi`));
+  }
+  if (input.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) {
+    errors.push(createError("email", "Format email tidak valid"));
+  }
+  if (input.password && (input.password.length < 8 || !/[A-Za-z]/.test(input.password) || !/\d/.test(input.password))) {
+    errors.push(createError("password", "Password minimal 8 karakter dan harus berisi huruf serta angka"));
+  }
+  if (input.phone && !/^\+?[0-9\s-]{8,20}$/.test(input.phone)) {
+    errors.push(createError("phone", "Nomor telepon tidak valid"));
+  }
+  return { valid: errors.length === 0, errors };
 }
 
 export function validateMediaSuggestion(
