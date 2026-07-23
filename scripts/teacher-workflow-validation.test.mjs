@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { validateTeacherSignup, validateMedia } from "../src/lib/validations.ts";
+import { validateTeacherSignup, validateMedia, validateProfile } from "../src/lib/validations.ts";
 import { buildContributorProfile } from "../src/lib/auth-profile.ts";
 
 test("teacher signup requires a complete valid profile", () => {
@@ -31,6 +31,11 @@ test("pending is a valid media review status", () => {
     type: "file",
     status: "pending",
   }).valid, true);
+});
+
+test("profile updates reject missing names and invalid phone numbers", () => {
+  assert.equal(validateProfile({ name: "Siti Aminah", phone: "+62 812-3456-7890" }).valid, true);
+  assert.equal(validateProfile({ name: "", phone: "not-a-number" }).valid, false);
 });
 
 test("orphan auth users are restored as contributors", () => {

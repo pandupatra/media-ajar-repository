@@ -57,7 +57,7 @@ export default function AdminSettingsPage() {
                     <Icon className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm font-medium">{item.label}</span>
                   </div>
-                  <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-medium">
+                  <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">
                     {item.status}
                   </span>
                 </div>

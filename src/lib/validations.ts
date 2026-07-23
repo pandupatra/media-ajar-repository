@@ -161,6 +161,22 @@ export function validateTeacherSignup(input: Record<string, string>): Validation
   return { valid: errors.length === 0, errors };
 }
 
+export function validateProfile(input: Record<string, string>): ValidationResult {
+  const errors: ValidationError[] = [];
+  if (!input.name?.trim()) errors.push(createError("name", "Nama lengkap wajib diisi"));
+  for (const [field, label, maxLength] of [
+    ["name", "Nama lengkap", 100],
+    ["madrasah", "Madrasah", 150],
+    ["teaching_subject", "Mata pelajaran", 100],
+  ] as const) {
+    if (input[field]?.length > maxLength) errors.push(createError(field, `${label} maksimal ${maxLength} karakter`));
+  }
+  if (input.phone && !/^\+?[0-9\s-]{8,20}$/.test(input.phone)) {
+    errors.push(createError("phone", "Nomor telepon tidak valid"));
+  }
+  return { valid: errors.length === 0, errors };
+}
+
 export function validateMediaSuggestion(
   input: Record<string, unknown>
 ): ValidationResult {

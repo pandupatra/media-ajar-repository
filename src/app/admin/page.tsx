@@ -12,10 +12,10 @@ export default async function AdminDashboardPage() {
   const latestMedia = await getLatestMedia(5);
 
   const stats = [
-    { title: "Total Media", value: allMedia.length, icon: FileText, color: "text-blue-600", bgColor: "bg-blue-50" },
-    { title: "Dipublikasikan", value: publishedMedia.length, icon: BookOpen, color: "text-emerald-600", bgColor: "bg-emerald-50" },
-    { title: "Draft", value: draftMedia.length, icon: TrendingUp, color: "text-amber-600", bgColor: "bg-amber-50" },
-    { title: "Kategori", value: categories.length, icon: Tag, color: "text-purple-600", bgColor: "bg-purple-50" },
+    { title: "Total Media", value: allMedia.length, icon: FileText, color: "text-blue-600 dark:text-blue-300", bgColor: "bg-blue-50 dark:bg-blue-950/60" },
+    { title: "Dipublikasikan", value: publishedMedia.length, icon: BookOpen, color: "text-emerald-600 dark:text-emerald-300", bgColor: "bg-emerald-50 dark:bg-emerald-950/60" },
+    { title: "Draft", value: draftMedia.length, icon: TrendingUp, color: "text-amber-600 dark:text-amber-300", bgColor: "bg-amber-50 dark:bg-amber-950/60" },
+    { title: "Kategori", value: categories.length, icon: Tag, color: "text-purple-600 dark:text-purple-300", bgColor: "bg-purple-50 dark:bg-purple-950/60" },
   ];
 
   return (
@@ -64,8 +64,8 @@ export default async function AdminDashboardPage() {
                   </div>
                   <span className={`text-xs px-2.5 py-1 rounded-full font-medium ml-3 whitespace-nowrap ${
                     media.status === "published" 
-                      ? "bg-emerald-50 text-emerald-700" 
-                      : "bg-amber-50 text-amber-700"
+                      ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300"
+                      : "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300"
                   }`}>
                     {media.status === "published" ? "Published" : "Draft"}
                   </span>

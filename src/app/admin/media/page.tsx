@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Edit, Eye, FileText, Plus, Search, Trash2 } from "lucide-react";
+import { Table, Theme } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/components/ui/toast";
 import {
   ConfirmDialog,
   ConfirmDialogContent,
@@ -19,6 +21,7 @@ import { deleteMediaAction } from "./actions";
 import { Media } from "@/types";
 
 export default function AdminMediaPage() {
+  const showToast = useToast();
   const [mediaList, setMediaList] = useState<Media[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft">("all");
@@ -49,7 +52,9 @@ export default function AdminMediaPage() {
     try {
       await deleteMediaAction(deleteTarget);
       setMediaList(mediaList.filter((m) => m.id !== deleteTarget));
-    } catch {
+      showToast({ title: "Media berhasil dihapus", variant: "success" });
+    } catch (error) {
+      showToast({ title: "Media belum dihapus", description: error instanceof Error ? error.message : "Silakan coba lagi.", variant: "error" });
     } finally {
       setDeleting(false);
       setDeleteTarget(null);
@@ -106,40 +111,43 @@ export default function AdminMediaPage() {
         ) : (
           <>
             <div className="overflow-x-auto">
-              <table aria-label="Daftar media" className="w-full text-sm">
+              <Theme accentColor="blue" grayColor="slate" radius="large">
+                <Table.Root aria-label="Daftar media" variant="surface" size="2" className="min-w-[720px]">
                 <caption className="sr-only">Daftar media pembelajaran</caption>
-                <thead>
-                  <tr className="border-b bg-muted/30">
-                    <th scope="col" className="text-left p-4 font-medium text-muted-foreground">Judul</th>
-                    <th scope="col" className="text-left p-4 font-medium text-muted-foreground">Format</th>
-                    <th scope="col" className="text-left p-4 font-medium text-muted-foreground">Status</th>
-                    <th scope="col" className="text-left p-4 font-medium text-muted-foreground">Tanggal</th>
-                    <th scope="col" className="text-right p-4 font-medium text-muted-foreground">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.ColumnHeaderCell>Judul</Table.ColumnHeaderCell>
+                    <Table.ColumnHeaderCell>Format</Table.ColumnHeaderCell>
+                    <Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
+                    <Table.ColumnHeaderCell>Dibuat</Table.ColumnHeaderCell>
+                    <Table.ColumnHeaderCell justify="end">Aksi</Table.ColumnHeaderCell>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
                   {filteredMedia.map((media) => (
-                    <tr key={media.id} className="border-b last:border-0 hover:bg-muted/20 transition-colors">
-                      <td className="p-4">
+                    <Table.Row key={media.id}>
+                      <Table.Cell>
                         <div className="font-medium line-clamp-1">{media.title}</div>
                         <div className="text-xs text-muted-foreground line-clamp-1 mt-0.5">{media.slug}</div>
-                      </td>
-                      <td className="p-4">
+                      </Table.Cell>
+                      <Table.Cell>
                         <Badge variant="secondary" className={`rounded-full ${getFormatColor(media.format)}`}>
                           {getFormatLabel(media.format)}
                         </Badge>
-                      </td>
-                      <td className="p-4">
+                      </Table.Cell>
+                      <Table.Cell>
                         <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                          media.status === "published" ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"
+                          media.status === "published"
+                            ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300"
+                            : "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300"
                         }`}>
                           {media.status === "published" ? "Published" : "Draft"}
                         </span>
-                      </td>
-                      <td className="p-4 text-muted-foreground">
+                      </Table.Cell>
+                      <Table.Cell className="text-muted-foreground">
                         {new Date(media.created_at).toLocaleDateString("id-ID")}
-                      </td>
-                      <td className="p-4">
+                      </Table.Cell>
+                      <Table.Cell justify="end">
                         <div className="flex items-center justify-end gap-1">
                           <Button variant="ghost" size="icon" asChild aria-label="Lihat media" className="rounded-xl">
                             <Link href={`/media/${media.slug}`} target="_blank">
@@ -155,11 +163,12 @@ export default function AdminMediaPage() {
                             <Trash2 className="h-4 w-4 text-destructive" />
                           </Button>
                         </div>
-                      </td>
-                    </tr>
+                      </Table.Cell>
+                    </Table.Row>
                   ))}
-                </tbody>
-              </table>
+                </Table.Body>
+                </Table.Root>
+              </Theme>
             </div>
             {filteredMedia.length === 0 && (
               <div className="text-center py-16">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft, BookOpen, Calendar, Download, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -47,11 +48,11 @@ export default async function MediaReviewDetailPage({ params }: { params: Promis
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
         <div className="space-y-6">
-          <div className="flex aspect-video items-center justify-center overflow-hidden rounded-2xl bg-muted">
+          <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-2xl bg-muted">
             {mediaEmbedUrl ? (
               <iframe src={mediaEmbedUrl} title={submission.title} className="h-full w-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
             ) : submission.thumbnail_url ? (
-              <img src={submission.thumbnail_url} alt={submission.title} className="h-full w-full object-cover" />
+              <Image src={submission.thumbnail_url} alt={submission.title} fill sizes="(max-width: 1024px) 100vw, 66vw" className="object-cover" />
             ) : (
               <BookOpen className="h-20 w-20 text-muted-foreground/30" />
             )}

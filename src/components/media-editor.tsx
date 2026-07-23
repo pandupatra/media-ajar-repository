@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/components/ui/toast";
 import { saveMediaAction } from "@/app/admin/media/actions";
 import type { Category, Media, MediaEditorPayload } from "@/types";
 
@@ -20,6 +21,7 @@ interface MediaEditorProps {
 
 export function MediaEditor({ media, categories, categoryIds = [], basePath, canPublish }: MediaEditorProps) {
   const router = useRouter();
+  const showToast = useToast();
   const pending = media?.pending_changes;
   const source = pending ?? media;
   const pendingCategories = pending?.category_ids ?? categoryIds;
@@ -51,9 +53,12 @@ export function MediaEditor({ media, categories, categoryIds = [], basePath, can
     const result = await saveMediaAction(media?.id ?? null, form, uploads);
     setSaving(false);
     if (result.error || result.errors) {
-      setError(result.error ?? Object.values(result.errors ?? {}).join(". "));
+      const message = result.error ?? Object.values(result.errors ?? {}).join(". ");
+      setError(message);
+      showToast({ title: "Media belum tersimpan", description: message, variant: "error" });
       return;
     }
+    showToast({ title: media ? "Perubahan berhasil disimpan" : "Media berhasil ditambahkan", variant: "success" });
     router.push(basePath);
     router.refresh();
   }

@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { BookOpen, Search, SlidersHorizontal, X, ArrowRight } from "lucide-react";
+import { BookOpen, Search, SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -53,7 +54,7 @@ export default function KatalogPage({ initialMedia, subjects, levels, formats }:
 
   const displayMedia = useMemo(() => {
     let result = [...filteredMedia];
-    
+
     if (selectedSubject) {
       const subjectIds = subjects
         .filter((s) => s.slug === selectedSubject)
@@ -113,9 +114,9 @@ export default function KatalogPage({ initialMedia, subjects, levels, formats }:
                   id="katalog-search"
                   aria-label="Cari media"
                   placeholder="Cari media..."
-                  className="pl-9 rounded-xl bg-background" 
-                  value={searchQuery} 
-                  onChange={(e) => handleSearch(e.target.value)} 
+                  className="pl-9 rounded-xl bg-background"
+                  value={searchQuery}
+                  onChange={(e) => handleSearch(e.target.value)}
                 />
               </div>
               <div className="flex gap-2">
@@ -124,8 +125,8 @@ export default function KatalogPage({ initialMedia, subjects, levels, formats }:
                 </Button>
                 <select
                   aria-label="Urutkan media"
-                  value={sortBy} 
-                  onChange={(e) => setSortBy(e.target.value as "newest" | "oldest" | "title")} 
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as "newest" | "oldest" | "title")}
                   className="h-9 rounded-xl border border-input bg-background px-3 py-1 text-sm shadow-sm"
                 >
                   <option value="newest">Terbaru</option>
@@ -155,11 +156,11 @@ export default function KatalogPage({ initialMedia, subjects, levels, formats }:
                   <div role="radiogroup" aria-label={`Filter ${title}`} className="space-y-2">
                     {items.map((item) => (
                       <label key={item.id} className="flex items-center gap-2.5 text-sm cursor-pointer group">
-                        <input 
-                          type="radio" 
-                          name={title} 
-                          checked={selected === item.slug} 
-                          onChange={() => set(item.slug)} 
+                        <input
+                          type="radio"
+                          name={title}
+                          checked={selected === item.slug}
+                          onChange={() => set(item.slug)}
                           className="accent-primary"
                         />
                         <span className="group-hover:text-primary transition-colors">{item.name}</span>
@@ -191,9 +192,9 @@ export default function KatalogPage({ initialMedia, subjects, levels, formats }:
                   {displayMedia.map((media) => (
                     <Link key={media.id} href={`/media/${media.slug}`}>
                       <Card className="overflow-hidden hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1 h-full flex flex-col rounded-2xl border-0 shadow-md shadow-primary/5">
-                        <div className="aspect-[4/3] bg-muted flex items-center justify-center overflow-hidden">
+                        <div className="relative aspect-[4/3] bg-muted flex items-center justify-center overflow-hidden">
                           {media.thumbnail_url ? (
-                            <img src={media.thumbnail_url} alt={media.title} className="w-full h-full object-cover" />
+                            <Image src={media.thumbnail_url} alt={media.title} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover" />
                           ) : (
                             <BookOpen className="h-12 w-12 text-muted-foreground/30" />
                           )}

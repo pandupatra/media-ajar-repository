@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Edit, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ConfirmDialog,
@@ -17,6 +18,7 @@ import { createCategoryAction, deleteCategoryAction } from "./actions";
 import { Category } from "@/types";
 
 export default function AdminCategoriesPage() {
+  const showToast = useToast();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
@@ -55,12 +57,15 @@ export default function AdminCategoriesPage() {
     };
     const result = await createCategoryAction(category);
     if (result?.errors) {
-      setAddError(Object.values(result.errors)[0]);
+      const message = Object.values(result.errors)[0];
+      setAddError(message);
+      showToast({ title: "Kategori belum ditambahkan", description: message, variant: "error" });
       return;
     }
     if (result?.data) {
       setCategories([...categories, result.data]);
       setNewCategory({ name: "", type: "subject" });
+      showToast({ title: "Kategori berhasil ditambahkan", variant: "success" });
     }
   };
 
@@ -70,7 +75,9 @@ export default function AdminCategoriesPage() {
     try {
       await deleteCategoryAction(deleteTarget);
       setCategories(categories.filter((c) => c.id !== deleteTarget));
-    } catch {
+      showToast({ title: "Kategori berhasil dihapus", variant: "success" });
+    } catch (error) {
+      showToast({ title: "Kategori belum dihapus", description: error instanceof Error ? error.message : "Silakan coba lagi.", variant: "error" });
     } finally {
       setDeleting(false);
       setDeleteTarget(null);

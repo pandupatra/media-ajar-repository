@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { Geist_Mono } from "next/font/google";
+import { ToastProvider } from "@/components/ui/toast";
+import "@radix-ui/themes/styles.css";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -26,13 +28,21 @@ export default function RootLayout({
   return (
     <html
       lang="id"
+      suppressHydrationWarning
       className={`${plusJakartaSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("theme"),d=t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches),e=document.documentElement;e.dataset.theme=d?"dark":"light";e.classList.toggle("dark",d)}catch(e){}})()`,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:rounded-xl focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-contrast focus:text-sm focus:outline-none">
           Langsung ke konten
         </a>
-        {children}
+        <ToastProvider>{children}</ToastProvider>
       </body>
     </html>
   );

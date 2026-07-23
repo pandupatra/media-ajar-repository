@@ -61,7 +61,11 @@ export async function signupAction(_state: AuthState, formData: FormData): Promi
   const validation = validateTeacherSignup({ ...fields, password });
   if (!validation.valid) return { error: validation.errors[0].message, fields };
 
-  const origin = (await headers()).get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "";
+  const requestHeaders = await headers();
+  const origin =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    requestHeaders.get("origin") ??
+    `${requestHeaders.get("x-forwarded-proto") ?? "https"}://${requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host")}`;
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({
     email: fields.email,

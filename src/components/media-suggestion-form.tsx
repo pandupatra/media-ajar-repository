@@ -1,16 +1,27 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useCallback, useEffect, useRef } from "react";
 import { Send } from "lucide-react";
 import { submitMediaSuggestion, type SuggestionFormState } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/toast";
 
 const initialState: SuggestionFormState = { status: "idle", message: "" };
 const fieldClassName = "mt-2 h-11";
 
 export function MediaSuggestionForm() {
-  const [state, formAction, pending] = useActionState(submitMediaSuggestion, initialState);
+  const showToast = useToast();
+  const submitWithToast = useCallback(async (previousState: SuggestionFormState, formData: FormData) => {
+    const nextState = await submitMediaSuggestion(previousState, formData);
+    showToast({
+      title: nextState.status === "success" ? "Usulan berhasil dikirim" : "Usulan belum terkirim",
+      description: nextState.message,
+      variant: nextState.status === "success" ? "success" : "error",
+    });
+    return nextState;
+  }, [showToast]);
+  const [state, formAction, pending] = useActionState(submitWithToast, initialState);
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
@@ -86,12 +97,6 @@ export function MediaSuggestionForm() {
           className="mt-2 w-full resize-y rounded-xl border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         />
       </div>
-
-      {state.message && (
-        <p className={`text-sm ${state.status === "success" ? "text-emerald-700" : "text-destructive"}`} role={state.status === "error" ? "alert" : "status"} aria-live="polite">
-          {state.message}
-        </p>
-      )}
 
       <Button type="submit" size="lg" className="h-12 w-full rounded-xl text-base" disabled={pending}>
         <Send className="h-4 w-4" />

@@ -200,9 +200,9 @@ export default async function HomePage() {
               {latestMedia.map((media) => (
                 <Link key={media.id} href={`/media/${media.slug}`}>
                   <Card className="overflow-hidden hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1 h-full flex flex-col rounded-2xl border-0 shadow-md shadow-primary/5">
-                    <div className="aspect-[4/3] bg-muted flex items-center justify-center overflow-hidden">
+                    <div className="relative aspect-[4/3] bg-muted flex items-center justify-center overflow-hidden">
                       {media.thumbnail_url ? (
-                        <img src={media.thumbnail_url} alt={media.title} className="w-full h-full object-cover" />
+                        <Image src={media.thumbnail_url} alt={media.title} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover" />
                       ) : (
                         <BookOpen className="h-12 w-12 text-muted-foreground/30" />
                       )}

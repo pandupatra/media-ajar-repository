@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
   ArrowLeft,
@@ -54,7 +55,7 @@ export default async function MediaDetailPage({ params }: Props) {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
-              <div className="aspect-video bg-muted rounded-2xl flex items-center justify-center overflow-hidden">
+              <div className="relative aspect-video bg-muted rounded-2xl flex items-center justify-center overflow-hidden">
                 {mediaEmbedUrl ? (
                   <iframe
                     src={mediaEmbedUrl}
@@ -64,7 +65,7 @@ export default async function MediaDetailPage({ params }: Props) {
                     allowFullScreen
                   />
                 ) : media.thumbnail_url ? (
-                  <img src={media.thumbnail_url} alt={media.title} className="w-full h-full object-cover" />
+                  <Image src={media.thumbnail_url} alt={media.title} fill sizes="(max-width: 1024px) 100vw, 66vw" className="object-cover" />
                 ) : (
                   <BookOpen className="h-24 w-24 text-muted-foreground/30" />
                 )}
@@ -153,9 +154,9 @@ export default async function MediaDetailPage({ params }: Props) {
                 {relatedMedia.map((related) => (
                   <Link key={related.id} href={`/media/${related.slug}`}>
                     <Card className="overflow-hidden hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1 h-full flex flex-col rounded-2xl border-0 shadow-md shadow-primary/5">
-                      <div className="aspect-video bg-muted flex items-center justify-center overflow-hidden">
+                      <div className="relative aspect-video bg-muted flex items-center justify-center overflow-hidden">
                         {related.thumbnail_url ? (
-                          <img src={related.thumbnail_url} alt={related.title} className="w-full h-full object-cover" />
+                          <Image src={related.thumbnail_url} alt={related.title} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover" />
                         ) : (
                           <BookOpen className="h-10 w-10 text-muted-foreground/50" />
                         )}
